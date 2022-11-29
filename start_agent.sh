@@ -17,9 +17,9 @@ do
     case $ARGS in
     s )
         sudo python3 collector_agent.py -v --ip $IP --port $PORT --nfqueue_num_pre $QUEUE_NUM_PREROUTE --nfqueue_num_post $QUEUE_NUM_POSTROUTE --log_file $1 -s --node_id $2
-        exit 1;;
+        ;;
     * )
         sudo python3 collector_agent.py -v --ip $IP --port $PORT --nfqueue_num_pre $QUEUE_NUM_PREROUTE --nfqueue_num_post $QUEUE_NUM_POSTROUTE --log_file $1
-        exit 1;;
+        ;;
     esac
 done
