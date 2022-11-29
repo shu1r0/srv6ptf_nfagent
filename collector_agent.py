@@ -14,7 +14,7 @@ from netfilterqueue import NetfilterQueue, Packet
 from collector_grpc.packet_collector_pb2_grpc import add_PacketCollectServiceServicer_to_server
 import collector_grpc.packet_collector_pb2 as pb
 
-from mode import CollectMode
+from mode import str2mode
 from collector_grpc.collector_service import PacketCollectService
 from packet_id_setter import PktIdTLVSetter, Hook
 from utils.log import get_file_handler, get_stream_handler
@@ -91,8 +91,8 @@ class PacketCollectorAgent:
         self.server.start()
 
         # bind netfilter queue
-        self.nfqueue_pre.bind(self.nfqueue_num_pre, self.nfqueue_callback)
-        self.nfqueue_post.bind(self.nfqueue_num_post, self.nfqueue_callback)
+        self.nfqueue_pre.bind(self.nfqueue_num_pre, self.nfqueue_callback, max_len=2**32-1)
+        self.nfqueue_post.bind(self.nfqueue_num_post, self.nfqueue_callback, max_len=2**32-1)
 
         # set asyncio
         self.nf_fd_pre = self.nfqueue_pre.get_fd()
@@ -162,6 +162,12 @@ def get_args():
     
     parser.add_argument('--nfqueue_num_pre', help='nfqueue number (PREROUTING)', default=1)
     parser.add_argument('--nfqueue_num_post', help='nfqueue number (POSTROUTING)', default=10)
+    
+    parser.add_argument('-s', '--stand_alone', help="run stand alone", action='store_true')
+    parser.add_argument('-m', '--mode', help='packet or packet_id (only stand alone mode)', default="packet_id")
+    parser.add_argument('--node_id', help='node id (only stand alone mode)', default=1)
+    parser.add_argument('--node_id_length', help='node id length (only stand alone mode)', default=16)
+    parser.add_argument('--counter_length', help='counter length (only stand alone mode)', default=32)
 
     args = parser.parse_args()
     return args
@@ -183,6 +189,9 @@ if __name__ == '__main__':
 
     agent = PacketCollectorAgent(nfqueue_num_pre=nfqueue_num_pre, nfqueue_num_post=nfqueue_num_post,
                                  ip=ip, port=port, log_level=log_level, log_file=log_file)
+    if args.stand_alone:
+        mode = str2mode(args.mode)
+        agent.notify_handler(mode=mode, node_id=args.node_id, node_id_length=args.node_id_length, counter_length=args.counter_length)
     try:
         agent.start()
     except KeyboardInterrupt:
