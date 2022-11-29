@@ -191,7 +191,7 @@ if __name__ == '__main__':
                                  ip=ip, port=port, log_level=log_level, log_file=log_file)
     if args.stand_alone:
         mode = str2mode(args.mode)
-        agent.notify_handler(mode=mode, node_id=args.node_id, node_id_length=args.node_id_length, counter_length=args.counter_length)
+        agent.notify_handler(mode=mode, node_id=int(args.node_id), node_id_length=int(args.node_id_length), counter_length=int(args.counter_length))
     try:
         agent.start()
     except KeyboardInterrupt:
