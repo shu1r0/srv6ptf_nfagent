@@ -14,7 +14,7 @@ from netfilterqueue import NetfilterQueue, Packet
 from collector_grpc.packet_collector_pb2_grpc import add_PacketCollectServiceServicer_to_server
 import collector_grpc.packet_collector_pb2 as pb
 
-from mode import str2mode
+from mode import CollectMode, str2mode
 from collector_grpc.collector_service import PacketCollectService
 from packet_id_setter import PktIdTLVSetter, Hook
 from utils.log import get_file_handler, get_stream_handler
