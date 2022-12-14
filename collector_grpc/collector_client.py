@@ -82,7 +82,11 @@ class PacketCollectorClient:
                     }
                     if p.WhichOneof("metadata") == "netfilterInfo":
                         p_d["metadata"] = {
-                            "netfilter_hook": p.netfilterInfo
+                            "netfilter_hook": p.netfilterInfo.hookpoint
+                        }
+                    elif p.WhichOneof("metadata") == "netfilterInfo":
+                        p_d["metadata"] = {
+                            "ebpf_hook": p.ebpfInfo.hookpoint
                         }
                     pkt_callback(p_d)
                 elif p.WhichOneof("data") == "packet_id":
@@ -94,6 +98,10 @@ class PacketCollectorClient:
                     if p.WhichOneof("metadata") == "netfilterInfo":
                         p_d["metadata"] = {
                             "netfilter_hook": p.netfilterInfo
+                        }
+                    elif p.WhichOneof("metadata") == "netfilterInfo":
+                        p_d["metadata"] = {
+                            "ebpf_hook": p.ebpfInfo.hookpoint
                         }
                     pkt_id_callback(p_d)
 
