@@ -78,6 +78,10 @@ class PacketCollectorAgent:
     def __del__(self):
         self.stop()
 
+    @property
+    def packet_queue(self):
+        return self._packet_queue
+
     def start(self):
         """start server"""
         self.logger.info("server start (ip={}, port={})".format(self.ip, self.port))
@@ -196,4 +200,6 @@ if __name__ == '__main__':
         agent.start()
     except KeyboardInterrupt:
         agent.stop()
+        if args.stand_alone:
+            print(agent.packet_queue)
 

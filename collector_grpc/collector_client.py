@@ -109,4 +109,4 @@ class PacketCollectorClient:
                 if 0 < packet_max <= counter:
                     return
         except asyncio.CancelledError:
-            pass
+            self.logger.info("gRPC Stream Cancelled.")
