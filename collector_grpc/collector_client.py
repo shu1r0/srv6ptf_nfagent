@@ -82,7 +82,11 @@ class PacketCollectorClient:
                     }
                     if p.WhichOneof("metadata") == "netfilterInfo":
                         p_d["metadata"] = {
-                            "netfilter_hook": p.netfilterInfo
+                            "netfilter_hook": p.netfilterInfo.hookpoint
+                        }
+                    elif p.WhichOneof("metadata") == "netfilterInfo":
+                        p_d["metadata"] = {
+                            "ebpf_hook": p.ebpfInfo.hookpoint
                         }
                     pkt_callback(p_d)
                 elif p.WhichOneof("data") == "packet_id":
@@ -95,10 +99,14 @@ class PacketCollectorClient:
                         p_d["metadata"] = {
                             "netfilter_hook": p.netfilterInfo
                         }
+                    elif p.WhichOneof("metadata") == "netfilterInfo":
+                        p_d["metadata"] = {
+                            "ebpf_hook": p.ebpfInfo.hookpoint
+                        }
                     pkt_id_callback(p_d)
 
                 counter += 1
                 if 0 < packet_max <= counter:
                     return
         except asyncio.CancelledError:
-            pass
+            self.logger.info("gRPC Stream Cancelled.")
