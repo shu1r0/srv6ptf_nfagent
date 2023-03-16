@@ -1,5 +1,9 @@
+#!/usr/bin/env python3
+
+
 import asyncio
 import functools
+import subprocess
 from logging import getLogger, INFO, DEBUG
 import argparse
 from datetime import datetime
@@ -11,13 +15,13 @@ from collections import deque
 import grpc
 from netfilterqueue import NetfilterQueue, Packet
 
-from collector_grpc.packet_collector_pb2_grpc import add_PacketCollectServiceServicer_to_server
-import collector_grpc.packet_collector_pb2 as pb
+from nfagent.collector_grpc.packet_collector_pb2_grpc import add_PacketCollectServiceServicer_to_server
+import nfagent.collector_grpc.packet_collector_pb2 as pb
 
-from mode import CollectMode, str2mode
-from collector_grpc.collector_service import PacketCollectService
-from packet_id_setter import PktIdTLVSetter, Hook
-from utils.log import get_file_handler, get_stream_handler
+from nfagent.mode import CollectMode, str2mode
+from nfagent.collector_grpc.collector_service import PacketCollectService
+from nfagent.packet_id_setter import PktIdTLVSetter, Hook
+from nfagent.utils.log import get_file_handler, get_stream_handler
 
 
 class CircularBuffer(deque):
@@ -190,6 +194,14 @@ if __name__ == '__main__':
     
     nfqueue_num_pre = args.nfqueue_num_pre
     nfqueue_num_post = args.nfqueue_num_post
+    
+    # set ip6tables
+    prerouting_cmd = "ip6tables -t mangle -m ipv6header --soft --header ipv6-route -I PREROUTING -j NFQUEUE --queue-num %d" % nfqueue_num_pre
+    postrouting_cmd = "ip6tables -t mangle -m ipv6header --soft --header ipv6-route -I POSTROUTING -j NFQUEUE --queue-num %d" % nfqueue_num_post
+    r = subprocess.run(prerouting_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    print(r.stdout)
+    proc = subprocess.run(postrouting_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    print(r.stdout)
 
     agent = PacketCollectorAgent(nfqueue_num_pre=nfqueue_num_pre, nfqueue_num_post=nfqueue_num_post,
                                  ip=ip, port=port, log_level=log_level, log_file=log_file)

@@ -1,7 +1,7 @@
 import time
 from packet_collector_pb2_grpc import PacketCollectServiceServicer
 
-from mode import CollectMode
+from nfagent.mode import CollectMode
 
 
 class PacketCollectService(PacketCollectServiceServicer):
