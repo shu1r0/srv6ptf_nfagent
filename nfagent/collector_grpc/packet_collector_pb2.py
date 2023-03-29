@@ -15,7 +15,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x16packet_collector.proto\"\"\n\rNetFilterInfo\x12\x11\n\thookpoint\x18\x01 \x01(\t\"(\n\x08\x45\x42PFInfo\x12\x1c\n\thookpoint\x18\x01 \x01(\x0e\x32\t.EBPFHook\"\xb3\x01\n\nPacketInfo\x12\x10\n\x06packet\x18\x01 \x01(\x0cH\x00\x12\x13\n\tpacket_id\x18\x02 \x01(\x04H\x00\x12\x0f\n\x07node_id\x18\x05 \x01(\r\x12\x11\n\ttimestamp\x18\x06 \x01(\x01\x12\'\n\rnetfilterInfo\x18\n \x01(\x0b\x32\x0e.NetFilterInfoH\x01\x12\x1d\n\x08\x65\x62pfInfo\x18\x0b \x01(\x0b\x32\t.EBPFInfoH\x01\x42\x06\n\x04\x64\x61taB\n\n\x08metadata\"U\n\x12PollSettingRequest\x12\x0f\n\x07node_id\x18\x02 \x01(\r\x12\x16\n\x0enode_id_length\x18\x03 \x01(\r\x12\x16\n\x0e\x63ounter_length\x18\x04 \x01(\r\"\x12\n\x10PollSettingReply\"\x13\n\x11PacketInfoRequest\"4\n\x0fPacketInfoReply\x12!\n\x0cpacket_infos\x18\x01 \x03(\x0b\x32\x0b.PacketInfo\"w\n\x17PacketInfoStreamRequest\x12\x1b\n\x13\x63\x61pture_all_packets\x18\x01 \x01(\x08\x12\x0f\n\x07node_id\x18\x02 \x01(\r\x12\x16\n\x0enode_id_length\x18\x03 \x01(\r\x12\x16\n\x0e\x63ounter_length\x18\x04 \x01(\r*:\n\x0b\x43ollectMode\x12\x10\n\x0cUNKNOWN_MODE\x10\x00\x12\n\n\x06PACKET\x10\x01\x12\r\n\tPACKET_ID\x10\x02*?\n\x08\x45\x42PFHook\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x07\n\x03XDP\x10\x01\x12\x0e\n\nTC_INGRESS\x10\x02\x12\r\n\tTC_EGRESS\x10\x03\x32\xc6\x01\n\x14PacketCollectService\x12\x33\n\x07SetPoll\x12\x13.PollSettingRequest\x1a\x11.PollSettingReply\"\x00\x12\x37\n\rGetPacketInfo\x12\x12.PacketInfoRequest\x1a\x10.PacketInfoReply\"\x00\x12@\n\x13GetPacketInfoStream\x12\x18.PacketInfoStreamRequest\x1a\x0b.PacketInfo\"\x00\x30\x01\x42\x0bZ\t./pkg/apib\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x16packet_collector.proto\"\"\n\rNetFilterInfo\x12\x11\n\thookpoint\x18\x01 \x01(\t\"(\n\x08\x45\x42PFInfo\x12\x1c\n\thookpoint\x18\x01 \x01(\x0e\x32\t.EBPFHook\"\xb3\x01\n\nPacketInfo\x12\x10\n\x06packet\x18\x01 \x01(\x0cH\x00\x12\x13\n\tpacket_id\x18\x02 \x01(\x04H\x00\x12\x0f\n\x07node_id\x18\x05 \x01(\r\x12\x11\n\ttimestamp\x18\x06 \x01(\x01\x12\'\n\rnetfilterInfo\x18\n \x01(\x0b\x32\x0e.NetFilterInfoH\x01\x12\x1d\n\x08\x65\x62pfInfo\x18\x0b \x01(\x0b\x32\t.EBPFInfoH\x01\x42\x06\n\x04\x64\x61taB\n\n\x08metadata\"U\n\x12PollSettingRequest\x12\x0f\n\x07node_id\x18\x02 \x01(\r\x12\x16\n\x0enode_id_length\x18\x03 \x01(\r\x12\x16\n\x0e\x63ounter_length\x18\x04 \x01(\r\"\x12\n\x10PollSettingReply\"\x13\n\x11PacketInfoRequest\"4\n\x0fPacketInfoReply\x12!\n\x0cpacket_infos\x18\x01 \x03(\x0b\x32\x0b.PacketInfo\"w\n\x17PacketInfoStreamRequest\x12\x1b\n\x13\x63\x61pture_all_packets\x18\x01 \x01(\x08\x12\x0f\n\x07node_id\x18\x02 \x01(\r\x12\x16\n\x0enode_id_length\x18\x03 \x01(\r\x12\x16\n\x0e\x63ounter_length\x18\x04 \x01(\r*:\n\x0b\x43ollectMode\x12\x10\n\x0cUNKNOWN_MODE\x10\x00\x12\n\n\x06PACKET\x10\x01\x12\r\n\tPACKET_ID\x10\x02*D\n\x08\x45\x42PFHook\x12\x10\n\x0cUNKNOWN_HOOK\x10\x00\x12\x07\n\x03XDP\x10\x01\x12\x0e\n\nTC_INGRESS\x10\x02\x12\r\n\tTC_EGRESS\x10\x03\x32\xc6\x01\n\x14PacketCollectService\x12\x33\n\x07SetPoll\x12\x13.PollSettingRequest\x1a\x11.PollSettingReply\"\x00\x12\x37\n\rGetPacketInfo\x12\x12.PacketInfoRequest\x1a\x10.PacketInfoReply\"\x00\x12@\n\x13GetPacketInfoStream\x12\x18.PacketInfoStreamRequest\x1a\x0b.PacketInfo\"\x00\x30\x01\x42\x0bZ\t./pkg/apib\x06proto3')
 
 _COLLECTMODE = DESCRIPTOR.enum_types_by_name['CollectMode']
 CollectMode = enum_type_wrapper.EnumTypeWrapper(_COLLECTMODE)
@@ -24,7 +24,7 @@ EBPFHook = enum_type_wrapper.EnumTypeWrapper(_EBPFHOOK)
 UNKNOWN_MODE = 0
 PACKET = 1
 PACKET_ID = 2
-UNKNOWN = 0
+UNKNOWN_HOOK = 0
 XDP = 1
 TC_INGRESS = 2
 TC_EGRESS = 3
@@ -102,7 +102,7 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _COLLECTMODE._serialized_start=589
   _COLLECTMODE._serialized_end=647
   _EBPFHOOK._serialized_start=649
-  _EBPFHOOK._serialized_end=712
+  _EBPFHOOK._serialized_end=717
   _NETFILTERINFO._serialized_start=26
   _NETFILTERINFO._serialized_end=60
   _EBPFINFO._serialized_start=62
@@ -119,6 +119,6 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _PACKETINFOREPLY._serialized_end=466
   _PACKETINFOSTREAMREQUEST._serialized_start=468
   _PACKETINFOSTREAMREQUEST._serialized_end=587
-  _PACKETCOLLECTSERVICE._serialized_start=715
-  _PACKETCOLLECTSERVICE._serialized_end=913
+  _PACKETCOLLECTSERVICE._serialized_start=720
+  _PACKETCOLLECTSERVICE._serialized_end=918
 # @@protoc_insertion_point(module_scope)

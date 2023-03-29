@@ -18,7 +18,7 @@ enum CollectMode {
  * eBPF Hook point
  */
 enum EBPFHook {
-  UNKNOWN = 0;
+  UNKNOWN_HOOK = 0;
   XDP = 1;
   TC_INGRESS = 2;
   TC_EGRESS = 3;
