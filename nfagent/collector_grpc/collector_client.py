@@ -84,10 +84,12 @@ class PacketCollectorClient:
                         p_d["metadata"] = {
                             "netfilter_hook": p.netfilterInfo.hookpoint
                         }
-                    elif p.WhichOneof("metadata") == "netfilterInfo":
+                    elif p.WhichOneof("metadata") == "ebpfInfo":
                         p_d["metadata"] = {
                             "ebpf_hook": p.ebpfInfo.hookpoint
                         }
+                    else:
+                        self.logger.debug("Unkonwn metadata {}".format(p.WhichOneof("metadata")))
                     pkt_callback(p_d)
                 elif p.WhichOneof("data") == "packet_id":
                     p_d = {
@@ -104,6 +106,8 @@ class PacketCollectorClient:
                             "ebpf_hook": p.ebpfInfo.hookpoint
                         }
                     pkt_id_callback(p_d)
+                else:
+                    self.logger.debug("Unkonwn packet info {}".format(p_d))
 
                 counter += 1
                 if 0 < packet_max <= counter:
