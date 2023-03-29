@@ -99,7 +99,7 @@ class PacketCollectorClient:
                         p_d["metadata"] = {
                             "netfilter_hook": p.netfilterInfo
                         }
-                    elif p.WhichOneof("metadata") == "netfilterInfo":
+                    elif p.WhichOneof("metadata") == "ebpfInfo":
                         p_d["metadata"] = {
                             "ebpf_hook": p.ebpfInfo.hookpoint
                         }
