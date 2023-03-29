@@ -6,6 +6,7 @@ protoc.main(
         '-I.',
         '--python_out=.',
         '--grpc_python_out=.',
-        './packet_collector.proto',
+        '--proto_path=../../api/',
+        '../../api/packet_collector.proto',
     )
 )

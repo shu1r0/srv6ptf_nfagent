@@ -2,6 +2,9 @@
 syntax = 'proto3';
 
 
+option go_package = "./pkg/api";
+
+
 /**
  * Collect mode
  */
@@ -9,6 +12,16 @@ enum CollectMode {
   UNKNOWN_MODE = 0;
   PACKET = 1;
   PACKET_ID = 2;
+}
+
+/**
+ * eBPF Hook point
+ */
+enum EBPFHook {
+  UNKNOWN = 0;
+  XDP = 1;
+  TC_INGRESS = 2;
+  TC_EGRESS = 3;
 }
 
 
@@ -19,9 +32,11 @@ message NetFilterInfo {
   string hookpoint = 1;
 }
 
-
-message eBPFInfo {
-  string hookpoint = 1;
+/**
+ * metadata for eBPF
+ */
+message EBPFInfo {
+  EBPFHook hookpoint = 1;
 }
 
 
@@ -41,7 +56,7 @@ message PacketInfo {
 
   oneof metadata {
     NetFilterInfo netfilterInfo = 10;
-    eBPFInfo ebpfInfo = 11;
+    EBPFInfo ebpfInfo = 11;
   }
 }
 
@@ -73,7 +88,7 @@ message PacketInfoReply {
  * NotifyPacket Request
  */
 message PacketInfoStreamRequest {
-  optional bool capture_all_packets = 1;
+  bool capture_all_packets = 1;
   uint32 node_id = 2;
   uint32 node_id_length = 3;
   uint32 counter_length = 4;
