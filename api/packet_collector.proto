@@ -22,8 +22,30 @@ enum EBPFHook {
   XDP = 1;
   TC_INGRESS = 2;
   TC_EGRESS = 3;
+  LWT_IN = 4;
+  LWT_XMIT = 5;
+  LWT_OUT = 6;
+  LWT_SEG6LOCAL = 7;
 }
 
+
+/**
+ * Packet protocol
+ */
+ enum PacketProtocol {
+  UNKNOWN_PROTOCOL = 0;
+  PROTOCOL_ETH = 1;
+  PROTOCOL_IPV6 = 2;
+}
+
+
+/**
+ * PKTID EXTHDR
+ */
+ enum PktIdExtHdr {
+  UNKNOWN_EXTHDR = 0;
+  EXTHDR_ROUTING = 1;
+}
 
 /**
  * metadata for Netfilter
@@ -58,6 +80,9 @@ message PacketInfo {
     NetFilterInfo netfilterInfo = 10;
     EBPFInfo ebpfInfo = 11;
   }
+
+  PacketProtocol packet_protocol = 20;
+  PktIdExtHdr pktid_exthdr = 21;
 }
 
 /**

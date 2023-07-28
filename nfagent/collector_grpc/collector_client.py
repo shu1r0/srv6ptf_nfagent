@@ -74,12 +74,14 @@ class PacketCollectorClient:
         counter = 0
         try:
             async for p in self.packet_stream:
+                p_d = {
+                    "node_id": p.node_id,
+                    "timestamp": p.timestamp,
+                    "packet_protocol": p.packet_protocol,
+                    "pktid_exthdr": p.pktid_exthdr
+                }
                 if p.WhichOneof("data") == "packet":
-                    p_d = {
-                        "data": p.packet,
-                        "node_id": p.node_id,
-                        "timestamp": p.timestamp
-                    }
+                    p_d["data"] =  p.packet
                     if p.WhichOneof("metadata") == "netfilterInfo":
                         p_d["metadata"] = {
                             "netfilter_hook": p.netfilterInfo.hookpoint
@@ -92,11 +94,7 @@ class PacketCollectorClient:
                         self.logger.error("Unkonwn metadata {}".format(p.WhichOneof("metadata")))
                     pkt_callback(p_d)
                 elif p.WhichOneof("data") == "packet_id":
-                    p_d = {
-                        "pkt_id": p.packet_id,
-                        "node_id": p.node_id,
-                        "timestamp": p.timestamp
-                    }
+                    p_d["pkt_id"] =  p.packet_id
                     if p.WhichOneof("metadata") == "netfilterInfo":
                         p_d["metadata"] = {
                             "netfilter_hook": p.netfilterInfo
