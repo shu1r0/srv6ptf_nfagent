@@ -151,6 +151,8 @@ class PacketCollectorAgent:
                 netf_info = pb.NetFilterInfo()
                 netf_info.hookpoint = Hook(pkt.hook).name
                 pktinfo_buf.netfilterInfo.CopyFrom(netf_info)
+                pktinfo_buf.packet_protocol = pb.PacketProtocol.PROTOCOL_IPV6
+                pktinfo_buf.pktid_exthdr = pb.PktIdExtHdr.EXTHDR_ROUTING
                 self._packet_queue.put(pktinfo_buf)
 
             self.logger.debug("packet payload after set_tlv. hook={}, send_flag={} : {}".format(pkt.hook, send_flag, payload))
