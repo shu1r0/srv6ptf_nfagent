@@ -1,11 +1,13 @@
 from enum import Enum, IntEnum
 from struct import Struct
 from typing import Tuple, Optional
+from abc import ABCMeta, abstractmethod
 
 
 IPV6_HEADER_LENGTH = 40
 
 ETH_TYPE_IPV6 = 0x86dd
+IPV6_NEXT_HEADER_HOPBYHOPOPTIONS_HEADER = 0
 IPV6_NEXT_HEADER_ROUTING_HEADER = 43
 
 ehternet_struct = Struct("! 6s 6s H")
@@ -22,49 +24,19 @@ ipv6header_struct = Struct("! 4s H B B 16s 16s")
 srh_struct_no_segmentlist = Struct("! B B B B B B H")
 
 
-class SRHStruct:
-    
-    LENGTH_NO_SEGMENTLIST = 8  # (bytes)
-    SEGMENT_LENGTH = 16  # (bytes)
-    
+class IPv6ExtStructForTLV(metaclass=ABCMeta):
+
     def __init__(self):
         self.next_header = 0
-        # worning 8 bytes octet
-        self.hdr_ext_len = 0
-        self.routing_type = 0
-        self.segments_left = 0
-        self.last_entry = 0
-        self.flags = 0
-        self.tag = 0
-        self.segment_list = b''
+        self.hdr_ext_len = 0  # worning 8 bytes octet
         self.tlv_objects = b''
-        
+
         self.payload = b''
-    
-    def unpack(self, data: bytes):
-        data_no_segmentlist = data[:SRHStruct.LENGTH_NO_SEGMENTLIST]
-        (self.next_header, self.hdr_ext_len, self.routing_type, self.segments_left, self.last_entry, self.flags, self.tag) = srh_struct_no_segmentlist.unpack(data_no_segmentlist)
 
-        segment_list_length = SRHStruct.SEGMENT_LENGTH*(self.last_entry+1)
-        self.segment_list = data[SRHStruct.LENGTH_NO_SEGMENTLIST:SRHStruct.LENGTH_NO_SEGMENTLIST+segment_list_length]
-
-        srh_length = SRHStruct.LENGTH_NO_SEGMENTLIST+self.hdr_ext_len*8
-        tlv_data = data[SRHStruct.LENGTH_NO_SEGMENTLIST+segment_list_length:srh_length]
-        self.tlv_objects = tlv_data
-
-        self.payload = data[srh_length:]
-    
-    def pack(self) -> bytes:
-        srh_header = srh_struct_no_segmentlist.pack(
-            self.next_header, self.hdr_ext_len, self.routing_type, self.segments_left, self.last_entry,
-            self.flags, self.tag
-        )
-        return srh_header + self.segment_list + self.tlv_objects + self.payload
-    
     def add_tlv(self, tlv: bytes, append_hdr_len: int):
         self.tlv_objects = tlv + self.tlv_objects
         self.hdr_ext_len += append_hdr_len
-    
+
     def has_tlv(self, type: int) -> bool:
         if len(self.tlv_objects) > 0:
             for tlv in self.parse_tlv(self.tlv_objects):
@@ -100,6 +72,59 @@ class SRHStruct:
             return tlv
 
 
+class SRHStruct(IPv6ExtStructForTLV):
+
+    LENGTH_NO_SEGMENTLIST = 8  # (bytes)
+    SEGMENT_LENGTH = 16  # (bytes)
+    
+    def __init__(self):
+        super().__init__()
+        self.routing_type = 0
+        self.segments_left = 0
+        self.last_entry = 0
+        self.flags = 0
+        self.tag = 0
+        self.segment_list = b''
+    
+    def unpack(self, data: bytes):
+        data_no_segmentlist = data[:SRHStruct.LENGTH_NO_SEGMENTLIST]
+        (self.next_header, self.hdr_ext_len, self.routing_type, self.segments_left, self.last_entry, self.flags, self.tag) = srh_struct_no_segmentlist.unpack(data_no_segmentlist)
+
+        segment_list_length = SRHStruct.SEGMENT_LENGTH*(self.last_entry+1)
+        self.segment_list = data[SRHStruct.LENGTH_NO_SEGMENTLIST:SRHStruct.LENGTH_NO_SEGMENTLIST+segment_list_length]
+
+        srh_length = SRHStruct.LENGTH_NO_SEGMENTLIST+self.hdr_ext_len*8
+        tlv_data = data[SRHStruct.LENGTH_NO_SEGMENTLIST+segment_list_length:srh_length]
+        self.tlv_objects = tlv_data
+
+        self.payload = data[srh_length:]
+
+    def pack(self) -> bytes:
+        srh_header = srh_struct_no_segmentlist.pack(
+            self.next_header, self.hdr_ext_len, self.routing_type, self.segments_left, self.last_entry,
+            self.flags, self.tag
+        )
+        return srh_header + self.segment_list + self.tlv_objects + self.payload
+
+
+
+nh_extlen = Struct("! B")
+
+
+class HopByHopStruct(IPv6ExtStructForTLV):
+
+    def unpack(self, data: bytes):
+        (self.next_header, self.hdr_ext_len) = nh_extlen.unpack(data[:2])
+        hbh_len = 2 + self.hdr_ext_len*8
+        self.tlv_objects = data[2:hbh_len]
+
+        self.payload = data[hbh_len:]
+
+    def pack(self) -> bytes:
+        hbh_hdr = nh_extlen.pack(self.next_header, self.hdr_ext_len)
+        return hbh_hdr + self.tlv_objects + self.payload
+
+
 class Hook(IntEnum):
     
     PREROUTING = 0
@@ -109,7 +134,7 @@ class Hook(IntEnum):
     POSTROUTING = 4
 
 
-class PktIdTLVSetter:
+class PktIdTLVSetter(metaclass=ABCMeta):
     
     PKTIDTLV_TYPE = 124
     PKTIDTLV_TYPE_BYTES = PKTIDTLV_TYPE.to_bytes(1, "big")
@@ -150,6 +175,13 @@ class PktIdTLVSetter:
     def tlv_obj(self) -> bytes:
         return self.type + self.value_length.to_bytes(1, "big") + self.value
 
+    @abstractmethod
+    def set_tlv(self, pkt: bytes, hook: int) -> Tuple[bytes, int, bool]:
+        raise NotImplementedError("Need to implement")
+
+
+class PktIdTLVSetterSRH(PktIdTLVSetter):
+
     def set_tlv(self, pkt: bytes, hook: int) -> Tuple[bytes, int, bool]:
         """set pktid tlv object to packet
 
@@ -163,7 +195,9 @@ class PktIdTLVSetter:
         send_flag = False
         ipv6_header = list(ipv6header_struct.unpack(pkt[:IPV6_HEADER_LENGTH]))
         rest_pkt = pkt[IPV6_HEADER_LENGTH:]
-        if ipv6_header[2] == IPV6_NEXT_HEADER_ROUTING_HEADER:
+        if ipv6_header[2] == IPV6_NEXT_HEADER_HOPBYHOPOPTIONS_HEADER:
+            pass  #TODO
+        elif ipv6_header[2] == IPV6_NEXT_HEADER_ROUTING_HEADER:
             srh = SRHStruct()
             srh.unpack(rest_pkt)
 
@@ -185,3 +219,8 @@ class PktIdTLVSetter:
 
         return pkt, -1, send_flag
 
+
+class PktIdTLVSetterHopByHop(PktIdTLVSetter):
+
+    def set_tlv(self, pkt: bytes, hook: int) -> Tuple[bytes, int, bool]:
+        pass  #TODO

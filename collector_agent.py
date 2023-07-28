@@ -20,7 +20,7 @@ import nfagent.collector_grpc.packet_collector_pb2 as pb
 
 from nfagent.mode import CollectMode, str2mode
 from nfagent.collector_grpc.collector_service import PacketCollectService
-from nfagent.packet_id_setter import PktIdTLVSetter, Hook
+from nfagent.packet_id_setter import PktIdTLVSetter, Hook, PktIdTLVSetterSRH
 from nfagent.utils.log import get_file_handler, get_stream_handler
 
 
@@ -47,7 +47,7 @@ class PacketCollectorAgent:
         logger (Logger) : logger
     """
 
-    def __init__(self, nfqueue_num_pre, nfqueue_num_post, ip, port, log_level=INFO, event_loop=None, log_file=None):
+    def __init__(self, nfqueue_num_pre, nfqueue_num_post, ip, port, log_level=INFO, event_loop=None, log_file=None, pktid_setter_cls=PktIdTLVSetterSRH):
         # set logger
         self.logger = getLogger(__name__)
         self.logger.setLevel(log_level)
@@ -69,7 +69,8 @@ class PacketCollectorAgent:
         self.server = None
         self.ip = ip
         self.port = port
-        
+
+        self.pktid_setter_cls = pktid_setter_cls
         self.pktid_setter = None
 
         self._packet_queue_size = 2**16
@@ -129,7 +130,7 @@ class PacketCollectorAgent:
     def notify_handler(self, mode, node_id, node_id_length, counter_length) -> CircularBuffer:
         """called by gRPC Service"""
         self._collect_mode = mode
-        self.pktid_setter = PktIdTLVSetter(node_id=node_id, node_id_length=node_id_length, counter_length=counter_length)
+        self.pktid_setter = self.pktid_setter_cls(node_id=node_id, node_id_length=node_id_length, counter_length=counter_length)
         return self._packet_queue
 
     def nfqueue_callback(self, pkt: Packet):
