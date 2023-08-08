@@ -45,6 +45,7 @@ enum EBPFHook {
  enum PktIdExtHdr {
   UNKNOWN_EXTHDR = 0;
   EXTHDR_ROUTING = 1;
+  EXTHDR_HOPBYHOP = 2;
 }
 
 /**
