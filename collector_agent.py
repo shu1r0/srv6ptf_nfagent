@@ -91,7 +91,7 @@ class PacketCollectorAgent:
         self.logger.info("server start (ip={}, port={})".format(self.ip, self.port))
 
         # start grpc server
-        self.server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+        self.server = grpc.server(futures.ThreadPoolExecutor(max_workers=100))
         add_PacketCollectServiceServicer_to_server(
             self.service, self.server
         )
