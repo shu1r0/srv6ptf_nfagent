@@ -29,3 +29,12 @@ class TestSPacket(TestCase):
         tlv = new_srh_tlv(type=124, value='\x00\x18\x00\x00\x00\x08')
         result = ping1(dst="2001:db8:10::2", hlim=64, srh_tlvs=[tlv])
         self.assertEqual("EchoReply", result["msg"])
+    
+    def test_many_ping(self):
+        results = []
+        print("Send packet 501 times ...")
+        for _ in range(501):
+            result = ping1(dst="2001:db8:10::2", hlim=64, return_pkt=True)
+            if result:
+                results.append(result)
+        self.assertEqual(500, len(results))
