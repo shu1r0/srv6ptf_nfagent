@@ -15,7 +15,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x16packet_collector.proto\"\"\n\rNetFilterInfo\x12\x11\n\thookpoint\x18\x01 \x01(\t\"(\n\x08\x45\x42PFInfo\x12\x1c\n\thookpoint\x18\x01 \x01(\x0e\x32\t.EBPFHook\"\x81\x02\n\nPacketInfo\x12\x10\n\x06packet\x18\x01 \x01(\x0cH\x00\x12\x13\n\tpacket_id\x18\x02 \x01(\x04H\x00\x12\x0f\n\x07node_id\x18\x05 \x01(\r\x12\x11\n\ttimestamp\x18\x06 \x01(\x01\x12\'\n\rnetfilterInfo\x18\n \x01(\x0b\x32\x0e.NetFilterInfoH\x01\x12\x1d\n\x08\x65\x62pfInfo\x18\x0b \x01(\x0b\x32\t.EBPFInfoH\x01\x12(\n\x0fpacket_protocol\x18\x14 \x01(\x0e\x32\x0f.PacketProtocol\x12\"\n\x0cpktid_exthdr\x18\x15 \x01(\x0e\x32\x0c.PktIdExtHdrB\x06\n\x04\x64\x61taB\n\n\x08metadata\"U\n\x12PollSettingRequest\x12\x0f\n\x07node_id\x18\x02 \x01(\r\x12\x16\n\x0enode_id_length\x18\x03 \x01(\r\x12\x16\n\x0e\x63ounter_length\x18\x04 \x01(\r\"\x12\n\x10PollSettingReply\"\x13\n\x11PacketInfoRequest\"4\n\x0fPacketInfoReply\x12!\n\x0cpacket_infos\x18\x01 \x03(\x0b\x32\x0b.PacketInfo\"w\n\x17PacketInfoStreamRequest\x12\x1b\n\x13\x63\x61pture_all_packets\x18\x01 \x01(\x08\x12\x0f\n\x07node_id\x18\x02 \x01(\r\x12\x16\n\x0enode_id_length\x18\x03 \x01(\r\x12\x16\n\x0e\x63ounter_length\x18\x04 \x01(\r*:\n\x0b\x43ollectMode\x12\x10\n\x0cUNKNOWN_MODE\x10\x00\x12\n\n\x06PACKET\x10\x01\x12\r\n\tPACKET_ID\x10\x02*~\n\x08\x45\x42PFHook\x12\x10\n\x0cUNKNOWN_HOOK\x10\x00\x12\x07\n\x03XDP\x10\x01\x12\x0e\n\nTC_INGRESS\x10\x02\x12\r\n\tTC_EGRESS\x10\x03\x12\n\n\x06LWT_IN\x10\x04\x12\x0c\n\x08LWT_XMIT\x10\x05\x12\x0b\n\x07LWT_OUT\x10\x06\x12\x11\n\rLWT_SEG6LOCAL\x10\x07*K\n\x0ePacketProtocol\x12\x14\n\x10UNKNOWN_PROTOCOL\x10\x00\x12\x10\n\x0cPROTOCOL_ETH\x10\x01\x12\x11\n\rPROTOCOL_IPV6\x10\x02*5\n\x0bPktIdExtHdr\x12\x12\n\x0eUNKNOWN_EXTHDR\x10\x00\x12\x12\n\x0e\x45XTHDR_ROUTING\x10\x01\x32\xc6\x01\n\x14PacketCollectService\x12\x33\n\x07SetPoll\x12\x13.PollSettingRequest\x1a\x11.PollSettingReply\"\x00\x12\x37\n\rGetPacketInfo\x12\x12.PacketInfoRequest\x1a\x10.PacketInfoReply\"\x00\x12@\n\x13GetPacketInfoStream\x12\x18.PacketInfoStreamRequest\x1a\x0b.PacketInfo\"\x00\x30\x01\x42\x0bZ\t./pkg/apib\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x16packet_collector.proto\"\"\n\rNetFilterInfo\x12\x11\n\thookpoint\x18\x01 \x01(\t\"(\n\x08\x45\x42PFInfo\x12\x1c\n\thookpoint\x18\x01 \x01(\x0e\x32\t.EBPFHook\"0\n\x0bPacketAndId\x12\x0e\n\x06packet\x18\x01 \x01(\x0c\x12\x11\n\tpacket_id\x18\x02 \x01(\x04\"\xa8\x02\n\nPacketInfo\x12\x10\n\x06packet\x18\x01 \x01(\x0cH\x00\x12\x13\n\tpacket_id\x18\x02 \x01(\x04H\x00\x12%\n\rpacket_and_id\x18\x03 \x01(\x0b\x32\x0c.PacketAndIdH\x00\x12\x0f\n\x07node_id\x18\x05 \x01(\r\x12\x11\n\ttimestamp\x18\x06 \x01(\x01\x12\'\n\rnetfilterInfo\x18\n \x01(\x0b\x32\x0e.NetFilterInfoH\x01\x12\x1d\n\x08\x65\x62pfInfo\x18\x0b \x01(\x0b\x32\t.EBPFInfoH\x01\x12(\n\x0fpacket_protocol\x18\x14 \x01(\x0e\x32\x0f.PacketProtocol\x12\"\n\x0cpktid_exthdr\x18\x15 \x01(\x0e\x32\x0c.PktIdExtHdrB\x06\n\x04\x64\x61taB\n\n\x08metadata\"U\n\x12PollSettingRequest\x12\x0f\n\x07node_id\x18\x02 \x01(\r\x12\x16\n\x0enode_id_length\x18\x03 \x01(\r\x12\x16\n\x0e\x63ounter_length\x18\x04 \x01(\r\"6\n\x0f\x45\x62pfProgramInfo\x12\x17\n\x04hook\x18\x01 \x01(\x0e\x32\t.EBPFHook\x12\n\n\x02\x66\x64\x18\x02 \x01(\x04\"7\n\x10PollSettingReply\x12#\n\tebpf_info\x18\x01 \x01(\x0b\x32\x10.EbpfProgramInfo\"\x13\n\x11PacketInfoRequest\"4\n\x0fPacketInfoReply\x12!\n\x0cpacket_infos\x18\x01 \x03(\x0b\x32\x0b.PacketInfo\"\x18\n\x16\x45\x62pfProgramInfoRequest\":\n\x14\x45\x62pfProgramInfoReply\x12\"\n\x08programs\x18\x01 \x03(\x0b\x32\x10.EbpfProgramInfo\"w\n\x17PacketInfoStreamRequest\x12\x1b\n\x13\x63\x61pture_all_packets\x18\x01 \x01(\x08\x12\x0f\n\x07node_id\x18\x02 \x01(\r\x12\x16\n\x0enode_id_length\x18\x03 \x01(\r\x12\x16\n\x0e\x63ounter_length\x18\x04 \x01(\r*:\n\x0b\x43ollectMode\x12\x10\n\x0cUNKNOWN_MODE\x10\x00\x12\n\n\x06PACKET\x10\x01\x12\r\n\tPACKET_ID\x10\x02*~\n\x08\x45\x42PFHook\x12\x10\n\x0cUNKNOWN_HOOK\x10\x00\x12\x07\n\x03XDP\x10\x01\x12\x0e\n\nTC_INGRESS\x10\x02\x12\r\n\tTC_EGRESS\x10\x03\x12\n\n\x06LWT_IN\x10\x04\x12\x0c\n\x08LWT_XMIT\x10\x05\x12\x0b\n\x07LWT_OUT\x10\x06\x12\x11\n\rLWT_SEG6LOCAL\x10\x07*K\n\x0ePacketProtocol\x12\x14\n\x10UNKNOWN_PROTOCOL\x10\x00\x12\x10\n\x0cPROTOCOL_ETH\x10\x01\x12\x11\n\rPROTOCOL_IPV6\x10\x02*b\n\x0bPktIdExtHdr\x12\x12\n\x0eUNKNOWN_EXTHDR\x10\x00\x12\x12\n\x0e\x45XTHDR_ROUTING\x10\x01\x12\x13\n\x0f\x45XTHDR_HOPBYHOP\x10\x02\x12\x16\n\x12\x45XTHDR_DESTINATION\x10\x03\x32\x8e\x02\n\x14PacketCollectService\x12\x33\n\x07SetPoll\x12\x13.PollSettingRequest\x1a\x11.PollSettingReply\"\x00\x12\x37\n\rGetPacketInfo\x12\x12.PacketInfoRequest\x1a\x10.PacketInfoReply\"\x00\x12\x46\n\x12GetEbpfProgramInfo\x12\x17.EbpfProgramInfoRequest\x1a\x15.EbpfProgramInfoReply\"\x00\x12@\n\x13GetPacketInfoStream\x12\x18.PacketInfoStreamRequest\x1a\x0b.PacketInfo\"\x00\x30\x01\x42\x0bZ\t./pkg/apib\x06proto3')
 
 _COLLECTMODE = DESCRIPTOR.enum_types_by_name['CollectMode']
 CollectMode = enum_type_wrapper.EnumTypeWrapper(_COLLECTMODE)
@@ -41,15 +41,21 @@ PROTOCOL_ETH = 1
 PROTOCOL_IPV6 = 2
 UNKNOWN_EXTHDR = 0
 EXTHDR_ROUTING = 1
+EXTHDR_HOPBYHOP = 2
+EXTHDR_DESTINATION = 3
 
 
 _NETFILTERINFO = DESCRIPTOR.message_types_by_name['NetFilterInfo']
 _EBPFINFO = DESCRIPTOR.message_types_by_name['EBPFInfo']
+_PACKETANDID = DESCRIPTOR.message_types_by_name['PacketAndId']
 _PACKETINFO = DESCRIPTOR.message_types_by_name['PacketInfo']
 _POLLSETTINGREQUEST = DESCRIPTOR.message_types_by_name['PollSettingRequest']
+_EBPFPROGRAMINFO = DESCRIPTOR.message_types_by_name['EbpfProgramInfo']
 _POLLSETTINGREPLY = DESCRIPTOR.message_types_by_name['PollSettingReply']
 _PACKETINFOREQUEST = DESCRIPTOR.message_types_by_name['PacketInfoRequest']
 _PACKETINFOREPLY = DESCRIPTOR.message_types_by_name['PacketInfoReply']
+_EBPFPROGRAMINFOREQUEST = DESCRIPTOR.message_types_by_name['EbpfProgramInfoRequest']
+_EBPFPROGRAMINFOREPLY = DESCRIPTOR.message_types_by_name['EbpfProgramInfoReply']
 _PACKETINFOSTREAMREQUEST = DESCRIPTOR.message_types_by_name['PacketInfoStreamRequest']
 NetFilterInfo = _reflection.GeneratedProtocolMessageType('NetFilterInfo', (_message.Message,), {
   'DESCRIPTOR' : _NETFILTERINFO,
@@ -65,6 +71,13 @@ EBPFInfo = _reflection.GeneratedProtocolMessageType('EBPFInfo', (_message.Messag
   })
 _sym_db.RegisterMessage(EBPFInfo)
 
+PacketAndId = _reflection.GeneratedProtocolMessageType('PacketAndId', (_message.Message,), {
+  'DESCRIPTOR' : _PACKETANDID,
+  '__module__' : 'packet_collector_pb2'
+  # @@protoc_insertion_point(class_scope:PacketAndId)
+  })
+_sym_db.RegisterMessage(PacketAndId)
+
 PacketInfo = _reflection.GeneratedProtocolMessageType('PacketInfo', (_message.Message,), {
   'DESCRIPTOR' : _PACKETINFO,
   '__module__' : 'packet_collector_pb2'
@@ -78,6 +91,13 @@ PollSettingRequest = _reflection.GeneratedProtocolMessageType('PollSettingReques
   # @@protoc_insertion_point(class_scope:PollSettingRequest)
   })
 _sym_db.RegisterMessage(PollSettingRequest)
+
+EbpfProgramInfo = _reflection.GeneratedProtocolMessageType('EbpfProgramInfo', (_message.Message,), {
+  'DESCRIPTOR' : _EBPFPROGRAMINFO,
+  '__module__' : 'packet_collector_pb2'
+  # @@protoc_insertion_point(class_scope:EbpfProgramInfo)
+  })
+_sym_db.RegisterMessage(EbpfProgramInfo)
 
 PollSettingReply = _reflection.GeneratedProtocolMessageType('PollSettingReply', (_message.Message,), {
   'DESCRIPTOR' : _POLLSETTINGREPLY,
@@ -100,6 +120,20 @@ PacketInfoReply = _reflection.GeneratedProtocolMessageType('PacketInfoReply', (_
   })
 _sym_db.RegisterMessage(PacketInfoReply)
 
+EbpfProgramInfoRequest = _reflection.GeneratedProtocolMessageType('EbpfProgramInfoRequest', (_message.Message,), {
+  'DESCRIPTOR' : _EBPFPROGRAMINFOREQUEST,
+  '__module__' : 'packet_collector_pb2'
+  # @@protoc_insertion_point(class_scope:EbpfProgramInfoRequest)
+  })
+_sym_db.RegisterMessage(EbpfProgramInfoRequest)
+
+EbpfProgramInfoReply = _reflection.GeneratedProtocolMessageType('EbpfProgramInfoReply', (_message.Message,), {
+  'DESCRIPTOR' : _EBPFPROGRAMINFOREPLY,
+  '__module__' : 'packet_collector_pb2'
+  # @@protoc_insertion_point(class_scope:EbpfProgramInfoReply)
+  })
+_sym_db.RegisterMessage(EbpfProgramInfoReply)
+
 PacketInfoStreamRequest = _reflection.GeneratedProtocolMessageType('PacketInfoStreamRequest', (_message.Message,), {
   'DESCRIPTOR' : _PACKETINFOSTREAMREQUEST,
   '__module__' : 'packet_collector_pb2'
@@ -112,30 +146,38 @@ if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
   DESCRIPTOR._serialized_options = b'Z\t./pkg/api'
-  _COLLECTMODE._serialized_start=667
-  _COLLECTMODE._serialized_end=725
-  _EBPFHOOK._serialized_start=727
-  _EBPFHOOK._serialized_end=853
-  _PACKETPROTOCOL._serialized_start=855
-  _PACKETPROTOCOL._serialized_end=930
-  _PKTIDEXTHDR._serialized_start=932
-  _PKTIDEXTHDR._serialized_end=985
+  _COLLECTMODE._serialized_start=935
+  _COLLECTMODE._serialized_end=993
+  _EBPFHOOK._serialized_start=995
+  _EBPFHOOK._serialized_end=1121
+  _PACKETPROTOCOL._serialized_start=1123
+  _PACKETPROTOCOL._serialized_end=1198
+  _PKTIDEXTHDR._serialized_start=1200
+  _PKTIDEXTHDR._serialized_end=1298
   _NETFILTERINFO._serialized_start=26
   _NETFILTERINFO._serialized_end=60
   _EBPFINFO._serialized_start=62
   _EBPFINFO._serialized_end=102
-  _PACKETINFO._serialized_start=105
-  _PACKETINFO._serialized_end=362
-  _POLLSETTINGREQUEST._serialized_start=364
-  _POLLSETTINGREQUEST._serialized_end=449
-  _POLLSETTINGREPLY._serialized_start=451
-  _POLLSETTINGREPLY._serialized_end=469
-  _PACKETINFOREQUEST._serialized_start=471
-  _PACKETINFOREQUEST._serialized_end=490
-  _PACKETINFOREPLY._serialized_start=492
-  _PACKETINFOREPLY._serialized_end=544
-  _PACKETINFOSTREAMREQUEST._serialized_start=546
-  _PACKETINFOSTREAMREQUEST._serialized_end=665
-  _PACKETCOLLECTSERVICE._serialized_start=988
-  _PACKETCOLLECTSERVICE._serialized_end=1186
+  _PACKETANDID._serialized_start=104
+  _PACKETANDID._serialized_end=152
+  _PACKETINFO._serialized_start=155
+  _PACKETINFO._serialized_end=451
+  _POLLSETTINGREQUEST._serialized_start=453
+  _POLLSETTINGREQUEST._serialized_end=538
+  _EBPFPROGRAMINFO._serialized_start=540
+  _EBPFPROGRAMINFO._serialized_end=594
+  _POLLSETTINGREPLY._serialized_start=596
+  _POLLSETTINGREPLY._serialized_end=651
+  _PACKETINFOREQUEST._serialized_start=653
+  _PACKETINFOREQUEST._serialized_end=672
+  _PACKETINFOREPLY._serialized_start=674
+  _PACKETINFOREPLY._serialized_end=726
+  _EBPFPROGRAMINFOREQUEST._serialized_start=728
+  _EBPFPROGRAMINFOREQUEST._serialized_end=752
+  _EBPFPROGRAMINFOREPLY._serialized_start=754
+  _EBPFPROGRAMINFOREPLY._serialized_end=812
+  _PACKETINFOSTREAMREQUEST._serialized_start=814
+  _PACKETINFOSTREAMREQUEST._serialized_end=933
+  _PACKETCOLLECTSERVICE._serialized_start=1301
+  _PACKETCOLLECTSERVICE._serialized_end=1571
 # @@protoc_insertion_point(module_scope)

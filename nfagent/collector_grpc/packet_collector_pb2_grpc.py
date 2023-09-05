@@ -26,6 +26,11 @@ class PacketCollectServiceStub(object):
                 request_serializer=packet__collector__pb2.PacketInfoRequest.SerializeToString,
                 response_deserializer=packet__collector__pb2.PacketInfoReply.FromString,
                 )
+        self.GetEbpfProgramInfo = channel.unary_unary(
+                '/PacketCollectService/GetEbpfProgramInfo',
+                request_serializer=packet__collector__pb2.EbpfProgramInfoRequest.SerializeToString,
+                response_deserializer=packet__collector__pb2.EbpfProgramInfoReply.FromString,
+                )
         self.GetPacketInfoStream = channel.unary_stream(
                 '/PacketCollectService/GetPacketInfoStream',
                 request_serializer=packet__collector__pb2.PacketInfoStreamRequest.SerializeToString,
@@ -50,6 +55,12 @@ class PacketCollectServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GetEbpfProgramInfo(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def GetPacketInfoStream(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -68,6 +79,11 @@ def add_PacketCollectServiceServicer_to_server(servicer, server):
                     servicer.GetPacketInfo,
                     request_deserializer=packet__collector__pb2.PacketInfoRequest.FromString,
                     response_serializer=packet__collector__pb2.PacketInfoReply.SerializeToString,
+            ),
+            'GetEbpfProgramInfo': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetEbpfProgramInfo,
+                    request_deserializer=packet__collector__pb2.EbpfProgramInfoRequest.FromString,
+                    response_serializer=packet__collector__pb2.EbpfProgramInfoReply.SerializeToString,
             ),
             'GetPacketInfoStream': grpc.unary_stream_rpc_method_handler(
                     servicer.GetPacketInfoStream,
@@ -117,6 +133,23 @@ class PacketCollectService(object):
         return grpc.experimental.unary_unary(request, target, '/PacketCollectService/GetPacketInfo',
             packet__collector__pb2.PacketInfoRequest.SerializeToString,
             packet__collector__pb2.PacketInfoReply.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetEbpfProgramInfo(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/PacketCollectService/GetEbpfProgramInfo',
+            packet__collector__pb2.EbpfProgramInfoRequest.SerializeToString,
+            packet__collector__pb2.EbpfProgramInfoReply.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
