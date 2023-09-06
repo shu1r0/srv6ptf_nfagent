@@ -20,7 +20,7 @@ class PacketCollectorClient:
         stub : grpc service stub
     """
 
-    def __init__(self, ip: str, port: str or int, node_id: int, node_id_length: int, counter_length: int, logger=None, event_loop=None):
+    def __init__(self, ip: str, port: str or int, node_id: int, node_id_length: int, counter_length: int, logger=None, event_loop=None, enable_stats=False):
         self.ip = ip
         self.port = port if isinstance(port, int) else int(port)
         self.node_id = node_id
@@ -35,6 +35,18 @@ class PacketCollectorClient:
         self.packet_stream = None
 
         self.logger = logger
+
+        self._stats = {
+            "message_count": 0,
+            "packet_count": 0,
+            "packetid_count": 0,
+            "packet_and_id_count": 0
+        }
+        self._enable_stats = enable_stats
+
+    @property
+    def stats(self):
+        return self._stats
 
     def establish_channel(self):
         """establish grpc channel"""
@@ -80,35 +92,39 @@ class PacketCollectorClient:
                     "packet_protocol": p.packet_protocol,
                     "pktid_exthdr": p.pktid_exthdr
                 }
+
+                if p.WhichOneof("metadata") == "netfilterInfo":
+                    p_d["metadata"] = {
+                        "netfilter_hook": p.netfilterInfo.hookpoint
+                    }
+                elif p.WhichOneof("metadata") == "ebpfInfo":
+                    p_d["metadata"] = {
+                        "ebpf_hook": p.ebpfInfo.hookpoint
+                    }
+                else:
+                    self.logger.error("Unkonwn metadata {}".format(p.WhichOneof("metadata")))
+
                 if p.WhichOneof("data") == "packet":
-                    p_d["data"] =  p.packet
-                    if p.WhichOneof("metadata") == "netfilterInfo":
-                        p_d["metadata"] = {
-                            "netfilter_hook": p.netfilterInfo.hookpoint
-                        }
-                    elif p.WhichOneof("metadata") == "ebpfInfo":
-                        p_d["metadata"] = {
-                            "ebpf_hook": p.ebpfInfo.hookpoint
-                        }
-                    else:
-                        self.logger.error("Unkonwn metadata {}".format(p.WhichOneof("metadata")))
+                    p_d["data"] = p.packet
                     pkt_callback(p_d)
+                    if self._enable_stats:
+                        self._stats["packet_count"] += 1
                 elif p.WhichOneof("data") == "packet_id":
-                    p_d["pkt_id"] =  p.packet_id
-                    if p.WhichOneof("metadata") == "netfilterInfo":
-                        p_d["metadata"] = {
-                            "netfilter_hook": p.netfilterInfo
-                        }
-                    elif p.WhichOneof("metadata") == "ebpfInfo":
-                        p_d["metadata"] = {
-                            "ebpf_hook": p.ebpfInfo.hookpoint
-                        }
-                    else:
-                        self.logger.error("Unkonwn metadata {}".format(p.WhichOneof("metadata")))
+                    p_d["pkt_id"] = p.packet_id
                     pkt_id_callback(p_d)
+                    if self._enable_stats:
+                        self._stats["packetid_count"] += 1
+                elif p.WhichOneof("data") == "packet_and_id":
+                    p_d["data"] = p.packet_and_id.packet
+                    p_d["pkt_id"] = p.packet_and_id.packet
+                    pkt_id_callback(p_d)
+                    if self._enable_stats:
+                        self._stats["packet_and_id_count"] += 1
                 else:
                     self.logger.error("Unkonwn packet info {}".format(p_d))
 
+                if self._enable_stats:
+                    self._stats["message_count"] += 1
                 counter += 1
                 if 0 < packet_max <= counter:
                     return
