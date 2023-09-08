@@ -27,3 +27,7 @@ options:
   --counter_length COUNTER_LENGTH
                         counter length (only stand alone mode)
 ```
+
+## Architecture
+
+![architecture](./docs/images/nfagent_architecture.drawio.png)
