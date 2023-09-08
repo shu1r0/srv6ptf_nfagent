@@ -1,9 +1,10 @@
 import asyncio
+from typing import Any
 
 import grpc
 
 import packet_collector_pb2_grpc
-from packet_collector_pb2 import PacketInfoStreamRequest
+from packet_collector_pb2 import PacketInfoStreamRequest, PollSettingRequest, PacketInfoRequest, EbpfProgramInfoRequest
 
 
 class NoChannelException(Exception):
@@ -72,14 +73,10 @@ class PacketCollectorClient:
             packet_max (int) : max packet count
         """
         if not self.has_established_channel():
-            raise NoChannelException
-        req = PacketInfoStreamRequest()
-        req.capture_all_packets = capture_all_packets
-        req.node_id = self.node_id
-        req.node_id_length = self.node_id_length
-        req.counter_length = self.counter_length
+            raise NoChannelException()
 
-        self.packet_stream = self.stub.GetPacketInfoStream(req)
+        # Send request
+        self.packet_stream = self.grpc_get_packet_info_stream(capture_all_packets)
 
         self.logger.debug("Send Notify Packet Info Request (node_id: {})".format(self.node_id))
 
@@ -130,3 +127,42 @@ class PacketCollectorClient:
                     return
         except asyncio.CancelledError:
             self.logger.info("gRPC Stream Cancelled.")
+
+    def get_packet_info_stream_request(self, capture_all_packets: bool):
+        req = PacketInfoStreamRequest()
+        req.capture_all_packets = capture_all_packets
+        req.node_id = self.node_id
+        req.node_id_length = self.node_id_length
+        req.counter_length = self.counter_length
+        return req
+
+    def get_poll_setting_request(self):
+        req = PollSettingRequest()
+        req.node_id = self.node_id
+        req.node_id_length = self.node_id_length
+        req.counter_length = self.counter_length
+        return req
+
+    def get_packet_info_request(self):
+        req = PacketInfoRequest()
+        return req
+
+    def get_ebpf_program_info_request(self):
+        req = EbpfProgramInfoRequest()
+        return req
+
+    def grpc_get_packet_info_stream(self, capture_all_packets: bool) -> Any:
+        req = self.get_packet_info_stream_request(capture_all_packets)
+        return self.stub.GetPacketInfoStream(req)
+
+    def grpc_set_poll(self):
+        req = self.get_poll_setting_request()
+        return self.stub.SetPoll(req)
+
+    def grpc_get_packet_info(self):
+        req = self.get_packet_info_request()
+        return self.stub.GetPacketInfo(req)
+
+    def grpc_get_ebpf_program_info(self):
+        req = self.get_ebpf_program_info_request()
+        return self.stub.GetEbpfProgramInfo(req)

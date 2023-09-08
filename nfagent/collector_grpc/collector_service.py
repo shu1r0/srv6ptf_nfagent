@@ -30,6 +30,9 @@ class PacketCollectService(PacketCollectServiceServicer):
     def GetPacketInfo(self, request, context):
         raise NotImplementedError()
 
+    def GetEbpfProgramInfo(self, request, context):
+        raise NotImplementedError()
+
     def GetPacketInfoStream(self, request, context):
         self.logger.debug("Notify Packet Info Called")
         if self._notify_packet_handler is None:

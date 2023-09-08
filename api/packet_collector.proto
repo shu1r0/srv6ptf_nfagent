@@ -1,4 +1,3 @@
-
 syntax = 'proto3';
 
 
@@ -13,6 +12,7 @@ enum CollectMode {
   PACKET = 1;
   PACKET_ID = 2;
 }
+
 
 /**
  * eBPF Hook point
@@ -49,12 +49,14 @@ enum EBPFHook {
   EXTHDR_DESTINATION = 3;
 }
 
+
 /**
  * metadata for Netfilter
  */
 message NetFilterInfo {
   string hookpoint = 1;
 }
+
 
 /**
  * metadata for eBPF
@@ -63,6 +65,10 @@ message EBPFInfo {
   EBPFHook hookpoint = 1;
 }
 
+
+/**
+ * Packet and id (for no id packet)
+ */
 message PacketAndId {
   bytes packet = 1;
   uint64 packet_id = 2;
@@ -93,6 +99,7 @@ message PacketInfo {
   PktIdExtHdr pktid_exthdr = 21;
 }
 
+
 /**
  * Agent setting
  */
@@ -103,6 +110,9 @@ message PollSettingRequest {
 }
 
 
+/**
+ * eBPF Program Info
+ */
 message EbpfProgramInfo {
   EBPFHook hook = 1;
   uint64 fd = 2;
@@ -116,20 +126,33 @@ message PollSettingReply {
   EbpfProgramInfo ebpf_info = 1;
 }
 
+
 /**
  * Packet Request
  */
 message PacketInfoRequest {}
 
+/**
+ * Packet Info Reqly
+ */
 message PacketInfoReply {
   repeated PacketInfo packet_infos = 1;
 }
 
+
+/**
+ * eBPF Program Info Request
+ */
 message EbpfProgramInfoRequest {}
 
+
+/**
+ * eBPF Program Info Reply
+ */
 message EbpfProgramInfoReply {
   repeated EbpfProgramInfo programs = 1;
 }
+
 
 /**
  * NotifyPacket Request

@@ -8,8 +8,6 @@ from logging import getLogger, INFO, DEBUG
 import argparse
 from datetime import datetime
 from concurrent import futures
-# from faster_fifo import Queue
-# import faster_fifo_reduction
 from collections import deque
 
 import grpc
@@ -203,7 +201,7 @@ if __name__ == '__main__':
     r = subprocess.run(prerouting_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     print(r.stdout)
     proc = subprocess.run(postrouting_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-    print(r.stdout)
+    print(proc.stdout)
 
     agent = PacketCollectorAgent(nfqueue_num_pre=nfqueue_num_pre, nfqueue_num_post=nfqueue_num_post,
                                  ip=ip, port=port, log_level=log_level, log_file=log_file)
