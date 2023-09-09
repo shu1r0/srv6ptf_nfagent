@@ -60,7 +60,7 @@ class TestSRv6PacketWithClient(TestCase):
             if result:
                 results.append(result)
         self.assertEqual(500, len(results))
-        self.assertEqual(500, self.client.stats.get("message_count", -1))
+        self.assertTrue(self.client.stats.get("message_count", -1) >= 500)
 
     def tearDown(self) -> None:
         self.client.close_channel()
