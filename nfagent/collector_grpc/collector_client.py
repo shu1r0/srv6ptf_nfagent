@@ -1,5 +1,6 @@
 import asyncio
 from typing import Any
+from logging import getLogger
 
 import grpc
 
@@ -35,7 +36,7 @@ class PacketCollectorClient:
 
         self.packet_stream = None
 
-        self.logger = logger
+        self.logger = logger if logger else getLogger(__name__)
 
         self._stats = {
             "message_count": 0,
@@ -157,12 +158,12 @@ class PacketCollectorClient:
 
     def grpc_set_poll(self):
         req = self.get_poll_setting_request()
-        return self.stub.SetPoll(req)
+        return asyncio.ensure_future(self.stub.SetPoll(req))
 
     def grpc_get_packet_info(self):
         req = self.get_packet_info_request()
-        return self.stub.GetPacketInfo(req)
+        return asyncio.ensure_future(self.stub.GetPacketInfo(req))
 
     def grpc_get_ebpf_program_info(self):
         req = self.get_ebpf_program_info_request()
-        return self.stub.GetEbpfProgramInfo(req)
+        return asyncio.ensure_future(self.stub.GetEbpfProgramInfo(req))

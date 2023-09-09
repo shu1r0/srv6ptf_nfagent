@@ -79,8 +79,8 @@ message PacketAndId {
  * packet
  */
 message PacketInfo {
+  // packet data
   oneof data {
-   // packet byte data
     bytes packet = 1;
     uint64 packet_id = 2;
     PacketAndId packet_and_id = 3;
@@ -90,12 +90,15 @@ message PacketInfo {
   // packet sniff timestamp
   double timestamp = 6;
 
+  // metadata
   oneof metadata {
     NetFilterInfo netfilterInfo = 10;
     EBPFInfo ebpfInfo = 11;
   }
 
+  // packet data protocol
   PacketProtocol packet_protocol = 20;
+  // Target IPv6 Ext protocol 
   PktIdExtHdr pktid_exthdr = 21;
 }
 
@@ -122,9 +125,7 @@ message EbpfProgramInfo {
 /**
  * Setting Reply
  */
-message PollSettingReply {
-  EbpfProgramInfo ebpf_info = 1;
-}
+message PollSettingReply {}
 
 
 /**
