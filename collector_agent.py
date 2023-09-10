@@ -123,7 +123,7 @@ class PacketCollectorAgent:
         self.nfqueue_pre.unbind()
 
         self.event_loop.stop()
-            
+
     def notify_handler(self, mode, node_id, node_id_length, counter_length) -> CircularBuffer:
         """called by gRPC Service"""
         self._collect_mode = mode

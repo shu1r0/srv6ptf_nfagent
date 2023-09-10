@@ -127,7 +127,7 @@ class PacketCollectorClient:
                 if 0 < packet_max <= counter:
                     return
         except asyncio.CancelledError:
-            self.logger.info("gRPC Stream Cancelled.")
+            self.logger.info("gRPC Stream Cancelled (ip: {}, port: {}, node_id: {}).".format(self.ip, self.port, self.node_id))
 
     def get_packet_info_stream_request(self, capture_all_packets: bool):
         req = PacketInfoStreamRequest()
