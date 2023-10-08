@@ -1,7 +1,6 @@
 import asyncio
 from typing import Any
 from logging import getLogger
-
 import grpc
 
 import packet_collector_pb2_grpc
@@ -78,12 +77,16 @@ class PacketCollectorClient:
 
         # Send request
         self.packet_stream = self.grpc_get_packet_info_stream(capture_all_packets)
+        if self.packet_stream is None:
+            self.logger.error("Create packet stream error. (nid:{}, ip:{}, port:{})".format(self.node_id, self.ip, self.port))
+            return
 
         self.logger.debug("Send Notify Packet Info Request (node_id: {})".format(self.node_id))
 
         counter = 0
         try:
             async for p in self.packet_stream:
+                # packet data
                 p_d = {
                     "node_id": p.node_id,
                     "timestamp": p.timestamp,
@@ -91,6 +94,7 @@ class PacketCollectorClient:
                     "pktid_exthdr": p.pktid_exthdr
                 }
 
+                # metadata
                 if p.WhichOneof("metadata") == "netfilterInfo":
                     p_d["metadata"] = {
                         "netfilter_hook": p.netfilterInfo.hookpoint
@@ -102,6 +106,7 @@ class PacketCollectorClient:
                 else:
                     self.logger.error("Unkonwn metadata {}".format(p.WhichOneof("metadata")))
 
+                # packet info
                 if p.WhichOneof("data") == "packet":
                     p_d["data"] = p.packet
                     pkt_callback(p_d)
@@ -121,15 +126,24 @@ class PacketCollectorClient:
                 else:
                     self.logger.error("Unkonwn packet info {}".format(p_d))
 
+                # increment stats
                 if self._enable_stats:
                     self._stats["message_count"] += 1
                 counter += 1
                 if 0 < packet_max <= counter:
                     return
+
+        except grpc.RpcError as rpc_err:
+            if rpc_err.code() == grpc.StatusCode.CANCELLED:
+                self.logger.error("This connection (nid:{}, ip:{}, port:{}) is cancelled.".format(self.node_id, self.ip, self.port))
+            elif rpc_err.code() == grpc.StatusCode.UNAVAILABLE:
+                self.logger.error("The server (nid:{}, ip:{}, port:{}) is unavailable.".format(self.node_id, self.ip, self.port))
+            else:
+                self.logger.error("Unknown grpc error: {} (nid:{}, ip:{}, port:{})".format(rpc_err, self.node_id, self.ip, self.port))
         except asyncio.CancelledError:
             self.logger.info("gRPC Stream Cancelled (ip: {}, port: {}, node_id: {}).".format(self.ip, self.port, self.node_id))
 
-    def get_packet_info_stream_request(self, capture_all_packets: bool):
+    def get_packet_info_stream_request(self, capture_all_packets: bool) -> PacketInfoStreamRequest:
         req = PacketInfoStreamRequest()
         req.capture_all_packets = capture_all_packets
         req.node_id = self.node_id
@@ -137,18 +151,18 @@ class PacketCollectorClient:
         req.counter_length = self.counter_length
         return req
 
-    def get_poll_setting_request(self):
+    def get_poll_setting_request(self) -> PollSettingRequest:
         req = PollSettingRequest()
         req.node_id = self.node_id
         req.node_id_length = self.node_id_length
         req.counter_length = self.counter_length
         return req
 
-    def get_packet_info_request(self):
+    def get_packet_info_request(self) -> PacketInfoRequest:
         req = PacketInfoRequest()
         return req
 
-    def get_ebpf_program_info_request(self):
+    def get_ebpf_program_info_request(self) -> EbpfProgramInfoRequest:
         req = EbpfProgramInfoRequest()
         return req
 
