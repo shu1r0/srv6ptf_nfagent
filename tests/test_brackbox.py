@@ -37,4 +37,4 @@ class TestSPacket(TestCase):
             result = ping1(dst="2001:db8:20::2", hlim=64, return_pkt=True)
             if result:
                 results.append(result)
-        self.assertAlmostEqual(500, len(results), places=1)
+        self.assertAlmostEqual(500, len(results), places=2)

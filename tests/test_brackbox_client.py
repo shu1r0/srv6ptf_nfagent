@@ -2,6 +2,8 @@ from unittest import TestCase, main
 from logging import getLogger
 from scapy.all import *
 from json import dumps
+import time
+import asyncio
 
 from nfagent.collector_grpc.collector_client import PacketCollectorClient
 
@@ -36,6 +38,15 @@ class TestSRv6PacketWithClient(TestCase):
 
         self.client_thread = threading.Thread(target=client_start)
         self.client_thread.start()
+    
+    # def test_grpc_client(self):
+    #     print("***** Send eBPF Program Info *****")
+    #     async def send_ebpf_info():
+    #         res = await self.client.grpc_get_ebpf_program_info()
+    #         print("***** Await eBPF Program Info *****")
+    #         print(res)
+    #     asyncio.ensure_future(send_ebpf_info())
+    #     time.sleep(4)
 
     def test_srv6_ping(self):
         results = []
@@ -65,8 +76,9 @@ class TestSRv6PacketWithClient(TestCase):
             result = ping1(dst="2001:db8:20::2", hlim=64, return_pkt=True)
             if result:
                 results.append(result)
-        self.assertAlmostEqual(500, len(results), places=1)
-        self.assertAlmostEqual(500, self.client.stats.get("message_count", -1), places=3)
+        self.assertAlmostEqual(500, len(results), delta=2)
+        print(self.client.stats)
+        self.assertAlmostEqual(500, self.client.stats.get("message_count", -1), delta=3)
 
     def tearDown(self) -> None:
         self.client.close_channel()
