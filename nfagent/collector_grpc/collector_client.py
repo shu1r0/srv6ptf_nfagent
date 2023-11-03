@@ -119,7 +119,7 @@ class PacketCollectorClient:
                         self._stats["packetid_count"] += 1
                 elif p.WhichOneof("data") == "packet_and_id":
                     p_d["data"] = p.packet_and_id.packet
-                    p_d["pkt_id"] = p.packet_and_id.packet
+                    p_d["pkt_id"] = p.packet_and_id.packet_id
                     pkt_id_callback(p_d)
                     if self._enable_stats:
                         self._stats["packet_and_id_count"] += 1

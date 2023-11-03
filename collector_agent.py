@@ -137,13 +137,16 @@ class PacketCollectorAgent:
             pkt.set_payload(payload)
             if send_flag and self._packet_queue is not None:
                 pktinfo_buf = pb.PacketInfo()
-                if self._collect_mode == CollectMode.PACKET:
-                    pktinfo_buf.packet = payload
-                elif self._collect_mode == CollectMode.PACKET_ID:
-                    if pkt.hook == Hook.PREROUTING:
+                if pkt.hook == Hook.PREROUTING:
+                    if self._collect_mode == CollectMode.PACKET:
+                        packet_and_id = pb.PacketAndId
+                        packet_and_id.packet = payload
+                        packet_and_id.packet_id = pkt_id
+                        pktinfo_buf.packet = packet_and_id
+                    elif self._collect_mode == CollectMode.PACKET_ID:
                         pktinfo_buf.packet_id = pkt_id
-                    elif pkt.hook == Hook.POSTROUTING:
-                        pktinfo_buf.packet = payload
+                elif pkt.hook == Hook.POSTROUTING:
+                    pktinfo_buf.packet = payload
                 pktinfo_buf.node_id = self.pktid_setter.node_id
                 pktinfo_buf.timestamp = datetime.now().timestamp()
                 netf_info = pb.NetFilterInfo()
@@ -161,18 +164,17 @@ class PacketCollectorAgent:
 def get_args():
     """get args from command line"""
     parser = argparse.ArgumentParser()
-    parser.add_argument('-v', '--verbose', action='store_true')
-    parser.add_argument('-f', '--force_pktid_setting', action='store_true')
+    parser.add_argument('-v', '--verbose', help='debug mode', action='store_true')
     parser.add_argument('--log_file', help="log file path")
 
     parser.add_argument('--ip', help='server ip address', default="[::]")
-    parser.add_argument('--port', help='listening port', default="31000")
+    parser.add_argument('--port', help='server port', default="31000")
     
     parser.add_argument('--nfqueue_num_pre', help='nfqueue number (PREROUTING)', default=1)
     parser.add_argument('--nfqueue_num_post', help='nfqueue number (POSTROUTING)', default=10)
     
-    parser.add_argument('-s', '--stand_alone', help="run stand alone", action='store_true')
-    parser.add_argument('-m', '--mode', help='packet or packet_id (only stand alone mode)', default="packet_id")
+    parser.add_argument('-s', '--stand_alone', help="run stand alone mode", action='store_true')
+    parser.add_argument('-m', '--mode', help='mode to collect packet (packet or packet_id)', default="packet_id")
     parser.add_argument('--node_id', help='node id (only stand alone mode)', default=1)
     parser.add_argument('--node_id_length', help='node id length (only stand alone mode)', default=16)
     parser.add_argument('--counter_length', help='counter length (only stand alone mode)', default=32)
