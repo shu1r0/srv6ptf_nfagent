@@ -139,10 +139,10 @@ class PacketCollectorAgent:
                 pktinfo_buf = pb.PacketInfo()
                 if pkt.hook == Hook.PREROUTING:
                     if self._collect_mode == CollectMode.PACKET:
-                        packet_and_id = pb.PacketAndId
+                        packet_and_id = pb.PacketAndId()
                         packet_and_id.packet = payload
                         packet_and_id.packet_id = pkt_id
-                        pktinfo_buf.packet = packet_and_id
+                        pktinfo_buf.packet_and_id.CopyFrom(packet_and_id)
                     elif self._collect_mode == CollectMode.PACKET_ID:
                         pktinfo_buf.packet_id = pkt_id
                 elif pkt.hook == Hook.POSTROUTING:

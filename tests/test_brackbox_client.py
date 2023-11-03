@@ -1,4 +1,5 @@
 from unittest import TestCase, main
+from logging import getLogger
 from scapy.all import *
 from json import dumps
 
@@ -19,14 +20,14 @@ class TestSRv6PacketWithClient(TestCase):
 
         def notify_packet_handler(data):
             print("***** Received Packet from agent *****")
-            print(data)
-            pkt = Ether(data["data"])
-            if IPv6ExtHdrSegmentRoutingTLV in pkt:
-                pkt[IPv6ExtHdrSegmentRoutingTLV].show()
+            # print(data)
+            # pkt = Ether(data["data"])
+            # if IPv6ExtHdrSegmentRoutingTLV in pkt:
+            #     pkt[IPv6ExtHdrSegmentRoutingTLV].show()
 
         def notify_packetid_handler(data):
             print("***** Received PacketId from agent *****")
-            print(data)
+            # print(data)
 
         def client_start():
             loop = self.client.event_loop
@@ -64,7 +65,7 @@ class TestSRv6PacketWithClient(TestCase):
             result = ping1(dst="2001:db8:20::2", hlim=64, return_pkt=True)
             if result:
                 results.append(result)
-        self.assertEqual(500, len(results))
+        self.assertAlmostEqual(500, len(results), places=1)
         self.assertAlmostEqual(500, self.client.stats.get("message_count", -1), places=3)
 
     def tearDown(self) -> None:

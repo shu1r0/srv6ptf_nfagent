@@ -31,7 +31,7 @@ sudo ./netns_network_examples/simple/2hosts_1router.sh -d
 
 # Agent
 # -- Start network
-sudo ./netns_network_examples/simple/2hosts_1router.sh -
+sudo ./netns_network_examples/simple/2hosts_1router.sh -c
 
 # start agent
 sudo ip netns exec r1 srv6_nfagent &
