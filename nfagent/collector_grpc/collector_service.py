@@ -1,5 +1,6 @@
 import time
 from packet_collector_pb2_grpc import PacketCollectServiceServicer
+import nfagent.collector_grpc.packet_collector_pb2 as pb
 
 from nfagent.mode import CollectMode
 
@@ -29,6 +30,10 @@ class PacketCollectService(PacketCollectServiceServicer):
     
     def GetPacketInfo(self, request, context):
         raise NotImplementedError()
+
+    def GetEbpfProgramInfo(self, request, context):
+        rep = pb.EbpfProgramInfoReply()
+        return rep
 
     def GetPacketInfoStream(self, request, context):
         self.logger.debug("Notify Packet Info Called")
