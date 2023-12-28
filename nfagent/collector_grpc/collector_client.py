@@ -170,14 +170,14 @@ class PacketCollectorClient:
         req = self.get_packet_info_stream_request(capture_all_packets)
         return self.stub.GetPacketInfoStream(req)
 
-    def grpc_set_poll(self):
+    def grpc_set_poll(self) -> grpc.aio._call.UnaryUnaryCall:
         req = self.get_poll_setting_request()
-        return asyncio.ensure_future(self.stub.SetPoll(req))
+        return self.stub.SetPoll(req)
 
-    def grpc_get_packet_info(self):
+    def grpc_get_packet_info(self) -> grpc.aio._call.UnaryUnaryCall:
         req = self.get_packet_info_request()
-        return asyncio.ensure_future(self.stub.GetPacketInfo(req))
+        return self.stub.GetPacketInfo(req)
 
-    def grpc_get_ebpf_program_info(self):
+    def grpc_get_ebpf_program_info(self) -> grpc.aio._call.UnaryUnaryCall:
         req = self.get_ebpf_program_info_request()
-        return asyncio.ensure_future(self.stub.GetEbpfProgramInfo(req))
+        return self.stub.GetEbpfProgramInfo(req)

@@ -1,5 +1,5 @@
 from unittest import TestCase, main
-from logging import getLogger
+from logging import getLogger, DEBUG
 from scapy.all import *
 from json import dumps
 import time
@@ -7,15 +7,18 @@ import asyncio
 
 from nfagent.collector_grpc.collector_client import PacketCollectorClient
 
-from srv6_ping.ping import ping1, new_srh_tlv
+from srv6_ping.ping import ping1
+from srv6_ping.utils import new_srh_tlv
 
 
 class TestSRv6PacketWithClient(TestCase):
 
     def setUp(self) -> None:
         """start gRPC client"""
+        logger = getLogger(__name__)
+        logger.setLevel(DEBUG)
         self.client = PacketCollectorClient(ip="192.168.10.1", port="31000", node_id=1, node_id_length=16,
-                                            logger=getLogger(__name__),
+                                            logger=logger,
                                             counter_length=32,
                                             enable_stats=True)
         self.client.establish_channel()
@@ -33,20 +36,22 @@ class TestSRv6PacketWithClient(TestCase):
 
         def client_start():
             loop = self.client.event_loop
+            # loop.set_debug(True)
             loop.run_until_complete(
                 self.client.notify_packet_info_coro(notify_packet_handler, notify_packetid_handler, True))
 
         self.client_thread = threading.Thread(target=client_start)
         self.client_thread.start()
     
-    # def test_grpc_client(self):
-    #     print("***** Send eBPF Program Info *****")
-    #     async def send_ebpf_info():
-    #         res = await self.client.grpc_get_ebpf_program_info()
-    #         print("***** Await eBPF Program Info *****")
-    #         print(res)
-    #     asyncio.ensure_future(send_ebpf_info())
-    #     time.sleep(4)
+    def test_grpc_client(self):
+        print("***** Send eBPF Program Info *****")
+        async def send_ebpf_info():
+            print(type(self.client.grpc_get_ebpf_program_info()))
+            res = await self.client.grpc_get_ebpf_program_info()
+            print(res.programs)
+        task = asyncio.ensure_future(send_ebpf_info())
+        task.add_done_callback(print)
+        time.sleep(4)
 
     def test_srv6_ping(self):
         results = []

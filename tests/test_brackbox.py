@@ -3,7 +3,8 @@ from scapy.all import *
 from json import dumps
 
 
-from srv6_ping.ping import ping1, new_srh_tlv
+from srv6_ping.ping import ping1
+from srv6_ping.utils import new_srh_tlv
 
 
 class TestSPacket(TestCase):
@@ -24,7 +25,6 @@ class TestSPacket(TestCase):
                 self.assertEqual("EchoReply", result["msg"])
                 # check return_pkt
                 self.assertTrue(result["sent_pkt"][IPv6].src == result["recv_pkt"][IPv6].dst)
-        
         
         tlv = new_srh_tlv(type=124, value='\x00\x18\x00\x00\x00\x08')
         result = ping1(dst="2001:db8:20::2", hlim=64, srh_tlvs=[tlv])

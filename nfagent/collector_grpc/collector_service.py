@@ -33,6 +33,7 @@ class PacketCollectService(PacketCollectServiceServicer):
 
     def GetEbpfProgramInfo(self, request, context):
         rep = pb.EbpfProgramInfoReply()
+        print(request)
         return rep
 
     def GetPacketInfoStream(self, request, context):
